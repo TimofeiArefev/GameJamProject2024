@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://d0qyk6v20uief"]
+[gd_scene load_steps=10 format=3 uid="uid://d0qyk6v20uief"]
 
 [ext_resource type="Script" path="res://Generator.gd" id="1_ckrtr"]
 [ext_resource type="Script" path="res://Game.gd" id="1_f1l42"]
@@ -6,6 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://bddyvmrwpbd53" path="res://A_black_image.jpg" id="4_4iv55"]
 [ext_resource type="AudioStream" uid="uid://ddwdyms872avt" path="res://audio/audio/move-self.mp3" id="5_qo7yh"]
 [ext_resource type="AudioStream" uid="uid://s602xd8ylkxu" path="res://audio/audio/capture.mp3" id="6_j84kb"]
+[ext_resource type="AudioStream" uid="uid://dg6kdlgk65gdk" path="res://audio/audio/explosion-42132.mp3" id="7_gos8t"]
+[ext_resource type="AudioStream" uid="uid://c4cbk75emphsj" path="res://audio/audio/game-teleport-90735.mp3" id="8_bkxg2"]
+[ext_resource type="AudioStream" uid="uid://if8s38mj0g6k" path="res://audio/audio/jump-up-245782.mp3" id="9_ic1d0"]
 
 [node name="Board" type="Control"]
 layout_mode = 3
@@ -36,5 +39,16 @@ stream = ExtResource("5_qo7yh")
 
 [node name="Capture" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_j84kb")
+
+[node name="Explosion-42132" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_gos8t")
+volume_db = -12.0
+
+[node name="Game-teleport-90735" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_bkxg2")
+
+[node name="Jump-up-245782" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_ic1d0")
+pitch_scale = 1.5
 
 [connection signal="send_location" from="Flow" to="." method="_on_flow_send_location"]

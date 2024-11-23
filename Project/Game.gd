@@ -39,7 +39,8 @@ func is_duplicate_square(x, y):
 		if(color == Globals.dup ):
 			return true
 	return false
-	
+
+
 func is_boomb_square(x, y):
 	var style = get_node("Flow/" + str(x) + "-" + str(y) ).get_theme_stylebox("normal")
 	if style is StyleBoxFlat:
@@ -56,6 +57,8 @@ func duoble_jump_square(node, pos, Piece, diraction):
 	piece_position[1] = str(int(piece_position[1]) + diraction)
 	piece_position = piece_position[0] + '-' + piece_position[1]
 	var node2 = get_node("Flow/" + piece_position)
+	var jump = $"Jump-up-245782"
+	jump.play()
 	if (node2.get_child_count() != 0):
 		Piece.reparent(node)
 		Piece.position = pos
@@ -76,9 +79,18 @@ func is_teleport_square(x, y):
 		if(color == Globals.teleport):
 			return true
 	return false
+func is_rand_teleport_square(x, y):
+	var style = get_node("Flow/" + str(x) + "-" + str(y)).get_theme_stylebox("normal")
+	if style is StyleBoxFlat:
+		var color = style.bg_color
+		if(color == Globals.teleport_rand):
+			return true
+	return false
 	
 func find_teleport_square(node, xb, yb, Piece):
 	var piece_position = node.get_name().split('-')
+	var teleport = $"Game-teleport-90735"
+	teleport.play()
 	for x in range(10):
 		for y in range(10):
 			var style = get_node("Flow/" + str(x) + "-" + str(y)).get_theme_stylebox("normal")
@@ -96,7 +108,8 @@ func find_teleport_square(node, xb, yb, Piece):
 							Piece.reparent(node)
 							Piece.position = pos
 							Update_Game(node)
-							
+	add_text_at_position("Teleport", Vector2(position_x, position_y))
+								
 func rand_teleport_square(node, xb, yb, Piece):
 	var piece_position = node.get_name().split('-')
 	var rng = RandomNumberGenerator.new()
@@ -114,6 +127,8 @@ func rand_teleport_square(node, xb, yb, Piece):
 		Piece.reparent(node)
 		Piece.position = pos
 		Update_Game(node)
+	add_text_at_position("Rand teleport", Vector2(position_x, position_y))
+	
 
 
 		
@@ -138,7 +153,7 @@ func duplicate_square(node, pos, Piece):
 		Piece.position = pos
 		Update_Game(node2)
 	add_text_at_position("Duplicate", Vector2(position_x, position_y))
-		
+			
 
 func check_coords(x, y):
 	# Define the potential directions
@@ -176,6 +191,8 @@ func boomb_square(node, pos, Piece):
 	var piece_position = node.get_name().split('-')
 	var current_x = int(piece_position[0])
 	var current_y = int(piece_position[1])
+	var bomb = $"Explosion-42132"
+	bomb.play()
 	
 	# Get valid adjacent coordinates
 	var adjacent_coords = check_coords(current_x, current_y)
@@ -201,6 +218,7 @@ func boomb_square(node, pos, Piece):
 			# Remove the piece from the adjacent node
 			adjacent_node.get_child(0).queue_free()
 			
+	add_text_at_position("Booooom", Vector2(position_x, position_y))
 
 	# Update the game state
 	#Update_Game(node)
@@ -267,6 +285,9 @@ func _on_flow_send_location(location: String):
 					duplicate_square(node, pos, Piece)
 				elif (is_teleport_square(Location_X, Location_Y)):
 					find_teleport_square(node, Location_X, Location_Y, Piece)
+				elif (is_rand_teleport_square(Location_X, Location_Y)):
+					rand_teleport_square(node, Location_X, Location_Y, Piece)
+
 				else:
 					Piece.reparent(node)
 					Piece.position = pos
@@ -291,6 +312,9 @@ func _on_flow_send_location(location: String):
 					boomb_square(node, pos, Piece)
 				elif (is_teleport_square(Location_X, Location_Y)):
 					find_teleport_square(node, Location_X, Location_Y, Piece)
+				elif (is_rand_teleport_square(Location_X, Location_Y)):
+					rand_teleport_square(node, Location_X, Location_Y, Piece)
+
 				elif Piece:
 					Piece.reparent(node)
 					Piece.position = pos

@@ -16,7 +16,7 @@ signal send_location
 				
 
 			
-func spawnRandomColors(color_1, color_2, color_3, color_4, color_1_quantity, color_2_quantity, color_3_quantity, color_4_quantity):
+func spawnRandomColors(color_1, color_2, color_3, color_4, color_5, color_1_quantity, color_2_quantity, color_3_quantity, color_4_quantity, color_5_quantity):
 
 	
 	var colors = []
@@ -30,10 +30,11 @@ func spawnRandomColors(color_1, color_2, color_3, color_4, color_1_quantity, col
 		colors.append(color_3)  # Pink color
 	for i in range(color_4_quantity):
 		colors.append(color_4)  # White color
-	
+	for i in range(color_5_quantity):
+		colors.append(color_5)  # White color	
 	# Calculate the remaining number of tiles and fill with green
 	var total_center_tiles = Board_X_Size * (center_end - center_start + 1)
-	var remaining_tiles = total_center_tiles - (color_1_quantity + color_2_quantity + color_3_quantity + color_4_quantity)
+	var remaining_tiles = total_center_tiles - (color_1_quantity + color_2_quantity + color_3_quantity + color_4_quantity + color_5_quantity )
 	for i in range(remaining_tiles):
 		colors.append(Color(0.1, 0.1, 0.1, 0.6))  # Green color for default tiles
 	
@@ -45,7 +46,7 @@ func spawnRandomColors(color_1, color_2, color_3, color_4, color_1_quantity, col
 
 func _ready():
 	# Call the function to spawn the random colors
-	var colors = spawnRandomColors(Globals.bomb, Globals.teleport, Globals.dup, Globals.jump, 4, 2, 4, 2)
+	var colors = spawnRandomColors(Globals.bomb, Globals.teleport, Globals.dup, Globals.jump, Globals.teleport_rand, 4, 2, 4, 2, 2)
 	var Number_X = 0
 	var Number_Y = 0
 	while Number_Y != Board_Y_Size:

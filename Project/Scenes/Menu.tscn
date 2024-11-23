@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://baclictes4s5u"]
+[gd_scene load_steps=3 format=3 uid="uid://baclictes4s5u"]
 
 [ext_resource type="Script" path="res://Scenes/Menu.gd" id="1_gcyt6"]
+[ext_resource type="Texture2D" uid="uid://cw1pue8yudreh" path="res://audio/audio/1520101818936.jpg" id="2_6uogh"]
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -34,6 +35,12 @@ text = "Start"
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../StartButton")
 text = "Quit"
+
+[node name="1520101818936" type="Sprite2D" parent="."]
+z_index = -99
+position = Vector2(575, 325)
+scale = Vector2(1.64183, 1.61)
+texture = ExtResource("2_6uogh")
 
 [connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]
