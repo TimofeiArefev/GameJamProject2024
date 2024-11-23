@@ -40,7 +40,6 @@ func spawnRandomColors(color_1, color_2, color_3, color_4, color_1_quantity, col
 
 func _ready():
 	# Call the function to spawn the random colors
-
 	var colors = spawnRandomColors(Globals.bomb, Globals.teleport, Globals.dup, Globals.jump, 4, 2, 4, 2)
 
 	var Number_X = 0
