@@ -10,6 +10,22 @@ var pos = Vector2(25, 25)
 var Areas: PackedStringArray
 # this is seperate the Areas for special circumstances, like castling.
 var Special_Area: PackedStringArray
+<<<<<<< HEAD
+=======
+
+func add_text_at_position(text: String, position: Vector2):
+	get_node("TextContainer").remove_child(get_node("TextContainer").get_child(0))
+	
+	var label = Label.new()
+	# Assuming 'label' is your Label node
+	label.add_theme_font_size_override("font_size", 24)  # Sets the font size to 24
+
+	label.text = text
+	label.position = position	
+	get_node("TextContainer").add_child(label)
+
+
+>>>>>>> bf0bd2f926fa34739f261d9351df0d510e4e818b
 func is_double_jump_square(x, y):
 	var style = get_node("Flow/" + str(x) + "-" + str(y)).get_theme_stylebox("normal")
 	if style is StyleBoxFlat:
@@ -26,6 +42,10 @@ func is_duplicate_square(x, y):
 			return true
 	return false
 	
+
+var position_x = 650
+var position_y = 70
+
 func duoble_jump_square(node, pos, Piece, diraction):
 	var piece_position = node.get_name().split('-')
 	piece_position[1] = str(int(piece_position[1]) + diraction)
@@ -39,6 +59,7 @@ func duoble_jump_square(node, pos, Piece, diraction):
 		Piece.reparent(node2)
 		Piece.position = pos
 		Update_Game(node2)
+<<<<<<< HEAD
 		
 func is_teleport_square(x, y):
 	var style = get_node("Flow/" + str(x) + "-" + str(y)).get_theme_stylebox("normal")
@@ -69,7 +90,12 @@ func find_teleport_square(node, xb, yb, Piece):
 							Update_Game(node)
 							
 
+=======
+	print("Text should be added")
+	add_text_at_position("Double jump", Vector2(position_x, position_y))
+>>>>>>> bf0bd2f926fa34739f261d9351df0d510e4e818b
 
+		
 func duplicate_square(node, pos, Piece):
 	print("Duplicate")
 	var piece_position = node.get_name().split('-')
@@ -90,6 +116,8 @@ func duplicate_square(node, pos, Piece):
 		node2.add_child(Piece.duplicate())
 		Piece.position = pos
 		Update_Game(node2)
+	add_text_at_position("Duplicate", Vector2(position_x, position_y))
+		
 
 func check_coords(x, y):
 	# Define the potential directions
