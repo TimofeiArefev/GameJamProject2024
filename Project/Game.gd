@@ -163,6 +163,14 @@ func boomb_square(node, pos, Piece):
 	# Get valid adjacent coordinates
 	var adjacent_coords = check_coords(current_x, current_y)
 	
+	Piece.reparent(node)
+	Piece.position = pos
+	Update_Game(node)
+	var style = StyleBoxFlat.new()
+	
+	style.bg_color = Color(0.1, 0.1, 0.1, 0.6)  # Red color
+	print("Node: ", node)
+	node.add_theme_stylebox_override("normal", style)
 	# Iterate over each adjacent coordinate
 	for coord in adjacent_coords:
 		var coord_x = int(coord.x)
@@ -171,7 +179,7 @@ func boomb_square(node, pos, Piece):
 		
 		# Retrieve the node at the adjacent coordinate
 		var adjacent_node = get_node("Flow/" + coord_name)
-		# Check if the adjacent node has children (i.e., a piece is present)
+		## Check if the adjacent node has children (i.e., a piece is present)
 		if adjacent_node.get_child_count() > 0:
 			# Remove the piece from the adjacent node
 			adjacent_node.get_child(0).queue_free()
@@ -236,7 +244,8 @@ func _on_flow_send_location(location: String):
 					duoble_jump_square(node, pos, Piece, 1 if Piece.Item_Color else -1)
 				elif(is_duplicate_square(Location_X, Location_Y)):
 					duplicate_square(node, pos, Piece)
-				
+				elif (is_teleport_square(Location_X, Location_Y)):
+					find_teleport_square(node, Location_X, Location_Y, Piece)
 				else:
 					Piece.reparent(node)
 					Piece.position = pos
