@@ -25,7 +25,8 @@ func _ready():
 			temp.connect("pressed", func():
 				emit_signal("send_location", temp.name))
 			temp.set_name(str(Number_X) + "-" + str(Number_Y))
-			if( Number_Y > 1 && Number_Y < 8 && rng.randi_range(0, 4) == 0 ):
+			#if( Number_Y > 1 && Number_Y < 8 && rng.randi_range(0, 4) == 0 ):
+			if( Number_Y == 2 || Number_Y == 7):
 				var style = StyleBoxFlat.new()
 				if(rng.randi_range(0, 1) == 0):
 					style.bg_color = Color(1, 0, 0)

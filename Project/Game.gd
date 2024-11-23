@@ -42,18 +42,39 @@ func duoble_jump_square(node, pos, Piece, diraction):
 		Update_Game(node2)
 		
 
-func duplicate_square(node, pos, Piece, diraction):
+func duplicate_square(node, pos, Piece):
 	print("Duplicate")
 	var piece_position = node.get_name().split('-')
-	piece_position[1] = str(int(piece_position[1]) + diraction)
+	piece_position[1] = str(int(piece_position[1]) )
 	piece_position = piece_position[0] + '-' + piece_position[1]
+	var style = StyleBoxFlat.new()
+	
+	style.bg_color = Color(0.1, 0.1, 0.1)  # Red color
+	print("Node: ", node)
+	node.add_theme_stylebox_override("normal", style)
 	var node2 = get_node("Flow/" + piece_position)
+	node2.add_theme_stylebox_override("normal", style)
 	if (node2.get_child_count() != 0):
-		Piece.reparent(node)
+		node.add_child(Piece.duplicate())
 		Piece.position = pos
 		Update_Game(node)
 	else:
-		Piece.reparent(node2)
+		node2.add_child(Piece.duplicate())
+		Piece.position = pos
+		Update_Game(node2)
+
+func duplicate_square_capture(node, pos, Piece):
+	print("Duplicate")
+	var piece_position = node.get_name().split('-')
+	piece_position[1] = str(int(piece_position[1]) )
+	piece_position = piece_position[0] + '-' + piece_position[1]
+	var node2 = get_node("Flow/" + piece_position)
+	if (node2.get_child_count() != 0):
+		node.add_child(Piece.duplicate())
+		Piece.position = pos
+		Update_Game(node)
+	else:
+		node2.add_child(Piece.duplicate())
 		Piece.position = pos
 		Update_Game(node2)
 
@@ -109,10 +130,15 @@ func _on_flow_send_location(location: String):
 					print("Damn, you win!")
 				
 				node.get_child(0).free()
+				if(is_red_square(Location_X, Location_Y)):
+					duoble_jump_square(node, pos, Piece, 1 if Piece.Item_Color else -1)
+				elif(is_green_square(Location_X, Location_Y)):
+					duplicate_square_capture(node, pos, Piece)
 				
-				Piece.reparent(node)
-				Piece.position = pos
-				Update_Game(node)
+				else:
+					Piece.reparent(node)
+					Piece.position = pos
+					Update_Game(node)
 	elif Selected_Node != "" && node.get_child_count() == 0:
 		# Moving a piece
 		for i in Areas:
@@ -125,7 +151,7 @@ func _on_flow_send_location(location: String):
 					duoble_jump_square(node, pos, Piece, 1 if Piece.Item_Color else -1)
 					
 				elif (is_green_square(Location_X, Location_Y)):
-					duplicate_square(node, pos, Piece, 1 if Piece.Item_Color else -1)
+					duplicate_square(node, pos, Piece, )
 					
 				else:
 					Piece.reparent(node)
