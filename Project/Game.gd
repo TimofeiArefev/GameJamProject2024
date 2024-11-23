@@ -15,11 +15,11 @@ func add_text_at_position(text: String, position: Vector2):
 	get_node("TextContainer").remove_child(get_node("TextContainer").get_child(0))
 	
 	var label = Label.new()
-	# Assuming 'label' is your Label node
+	
 	label.add_theme_font_size_override("font_size", 24)  # Sets the font size to 24
 
 	label.text = text
-	label.position = position	
+	label.position = position
 	get_node("TextContainer").add_child(label)
 
 
@@ -35,11 +35,18 @@ func is_duplicate_square(x, y):
 	var style = get_node("Flow/" + str(x) + "-" + str(y) ).get_theme_stylebox("normal")
 	if style is StyleBoxFlat:
 		var color = style.bg_color
-		if(color[1] == 1):
+		if(color == Globals.dup ):
 			return true
 	return false
 	
-
+func is_boomb_square(x, y):
+	var style = get_node("Flow/" + str(x) + "-" + str(y) ).get_theme_stylebox("normal")
+	if style is StyleBoxFlat:
+		var color = style.bg_color
+		if(color == Globals.bomb):
+			return true
+	return false
+	
 var position_x = 650
 var position_y = 70
 
@@ -76,7 +83,7 @@ func duplicate_square(node, pos, Piece):
 		node.add_child(Piece.duplicate())
 		Piece.position = pos
 		Update_Game(node)
-	else:
+	elif Piece:
 		node2.add_child(Piece.duplicate())
 		Piece.position = pos
 		Update_Game(node2)
@@ -113,9 +120,32 @@ func check_coords(x, y):
 
 
 
+
 func boomb_square(node, pos, Piece):
+	# Extract the current position from the node's name
+	var piece_position = node.get_name().split('-')
+	var current_x = int(piece_position[0])
+	var current_y = int(piece_position[1])
 	
-	pass
+	# Get valid adjacent coordinates
+	var adjacent_coords = check_coords(current_x, current_y)
+	
+	# Iterate over each adjacent coordinate
+	for coord in adjacent_coords:
+		var coord_x = int(coord.x)
+		var coord_y = int(coord.y)
+		var coord_name = str(coord_x) + "-" + str(coord_y)
+		
+		# Retrieve the node at the adjacent coordinate
+		var adjacent_node = get_node("Flow/" + coord_name)
+		# Check if the adjacent node has children (i.e., a piece is present)
+		if adjacent_node.get_child_count() > 0:
+			# Remove the piece from the adjacent node
+			adjacent_node.get_child(0).queue_free()
+			
+
+	# Update the game state
+	#Update_Game(node)
 
 func _on_flow_send_location(location: String):
 	# variables for later
@@ -186,13 +216,16 @@ func _on_flow_send_location(location: String):
 				var style = get_node("Flow/" + str(Location_X) + "-" + str(Location_Y) ).get_theme_stylebox("normal")
 				print(style.bg_color)
 				# Check if it's a StyleB
+
 				if(is_double_jump_square(Location_X, Location_Y)):
 					duoble_jump_square(node, pos, Piece, 1 if Piece.Item_Color else -1)
 					
 				elif (is_duplicate_square(Location_X, Location_Y)):
 					duplicate_square(node, pos, Piece )
-					
-				else:
+				elif(is_boomb_square(Location_X, Location_Y)):
+					print("I have a boomb")
+					boomb_square(node, pos, Piece)
+				elif Piece:
 					Piece.reparent(node)
 					Piece.position = pos
 					Update_Game(node)
