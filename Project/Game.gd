@@ -11,15 +11,15 @@ var Areas: PackedStringArray
 # this is seperate the Areas for special circumstances, like castling.
 var Special_Area: PackedStringArray
 
-func is_red_square(x, y):
+func is_double_jump_square(x, y):
 	var style = get_node("Flow/" + str(x) + "-" + str(y) ).get_theme_stylebox("normal")
 	if style is StyleBoxFlat:
 		var color = style.bg_color
-		if(color[0] == 1):
+		if(color == Globals.jump):
 			return true
 	return false
 	
-func is_green_square(x, y):
+func is_duplicate_square(x, y):
 	var style = get_node("Flow/" + str(x) + "-" + str(y) ).get_theme_stylebox("normal")
 	if style is StyleBoxFlat:
 		var color = style.bg_color
@@ -63,20 +63,39 @@ func duplicate_square(node, pos, Piece):
 		Piece.position = pos
 		Update_Game(node2)
 
-func duplicate_square_capture(node, pos, Piece):
-	print("Duplicate")
-	var piece_position = node.get_name().split('-')
-	piece_position[1] = str(int(piece_position[1]) )
-	piece_position = piece_position[0] + '-' + piece_position[1]
-	var node2 = get_node("Flow/" + piece_position)
-	if (node2.get_child_count() != 0):
-		node.add_child(Piece.duplicate())
-		Piece.position = pos
-		Update_Game(node)
-	else:
-		node2.add_child(Piece.duplicate())
-		Piece.position = pos
-		Update_Game(node2)
+func check_coords(x, y):
+	# Define the potential directions
+	var directions = [
+		Vector2(-1, 0),  # Up
+		Vector2(1, 0),   # Down
+		Vector2(0, -1),  # Left
+		Vector2(0, 1),   # Right
+		Vector2(-1, -1), # Top-left
+		Vector2(-1, 1),  # Top-right
+		Vector2(1, -1),  # Bottom-left
+		Vector2(1, 1)    # Bottom-right
+	]
+	
+	# Define the grid size
+	var grid_size = 10
+	
+	# List to hold valid coordinates
+	var valid_coords = []
+	
+	# Check each direction
+	for dir in directions:
+		var new_x = x + dir.x
+		var new_y = y + dir.y
+		if new_x >= 0 and new_x < grid_size and new_y >= 0 and new_y < grid_size:
+			valid_coords.append(Vector2(new_x, new_y))
+	
+	return valid_coords
+
+
+
+func boomb_square(node, pos, Piece):
+	
+	pass
 
 func _on_flow_send_location(location: String):
 	# variables for later
@@ -130,10 +149,10 @@ func _on_flow_send_location(location: String):
 					print("Damn, you win!")
 				
 				node.get_child(0).free()
-				if(is_red_square(Location_X, Location_Y)):
+				if(is_double_jump_square(Location_X, Location_Y)):
 					duoble_jump_square(node, pos, Piece, 1 if Piece.Item_Color else -1)
-				elif(is_green_square(Location_X, Location_Y)):
-					duplicate_square_capture(node, pos, Piece)
+				elif(is_duplicate_square(Location_X, Location_Y)):
+					duplicate_square(node, pos, Piece)
 				
 				else:
 					Piece.reparent(node)
@@ -147,11 +166,11 @@ func _on_flow_send_location(location: String):
 				var style = get_node("Flow/" + str(Location_X) + "-" + str(Location_Y) ).get_theme_stylebox("normal")
 				print(style.bg_color)
 				# Check if it's a StyleB
-				if(is_red_square(Location_X, Location_Y)):
+				if(is_double_jump_square(Location_X, Location_Y)):
 					duoble_jump_square(node, pos, Piece, 1 if Piece.Item_Color else -1)
 					
-				elif (is_green_square(Location_X, Location_Y)):
-					duplicate_square(node, pos, Piece, )
+				elif (is_duplicate_square(Location_X, Location_Y)):
+					duplicate_square(node, pos, Piece )
 					
 				else:
 					Piece.reparent(node)

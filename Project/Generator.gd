@@ -1,44 +1,73 @@
 extends FlowContainer
 
+
 @export var Board_X_Size = 10
 @export var Board_Y_Size = 10
 
 @export var Tile_X_Size: int = 50
 @export var Tile_Y_Size: int = 50
+var center_start = 2 
+var center_end = Board_Y_Size - 3
 
 signal send_location
+# Function to spawn random colors in the central rows
+func spawnRandomColors(color_1, color_2, color_3, color_4, color_1_quantity, color_2_quantity, color_3_quantity, color_4_quantity):
+
+	
+	var colors = []
+	
+	# Adding the required number of colors to the list
+	for i in range(color_1_quantity):
+		colors.append(color_1)  # Red color
+	for i in range(color_2_quantity):
+		colors.append(color_2)  # Blue color
+	for i in range(color_3_quantity):
+		colors.append(color_3)  # Pink color
+	for i in range(color_4_quantity):
+		colors.append(color_4)  # White color
+	
+	# Calculate the remaining number of tiles and fill with green
+	var total_center_tiles = Board_X_Size * (center_end - center_start + 1)
+	var remaining_tiles = total_center_tiles - (color_1_quantity + color_2_quantity + color_3_quantity + color_4_quantity)
+	for i in range(remaining_tiles):
+		colors.append(Color(0.1, 0.1, 0.1, 0.6))  # Green color for default tiles
+	
+	colors.shuffle()  # Shuffle the colors to distribute them randomly
+	
+	return colors
+
+
 
 func _ready():
-	# stop negative numbers from happening
-	if Board_X_Size < 0 || Board_Y_Size < 0:
-		return
+	# Call the function to spawn the random colors
+
+	var colors = spawnRandomColors(Globals.bomb, Globals.teleport, Globals.dup, Globals.jump, 4, 2, 4, 2)
+
 	var Number_X = 0
 	var Number_Y = 0
-	# Set up the board
-	var rng = RandomNumberGenerator.new()
+
 	while Number_Y != Board_Y_Size:
 		self.size.y += Tile_Y_Size + 5
 		self.size.x += Tile_X_Size + 5
+
 		while Number_X != Board_X_Size:
 			var temp = Button.new()
 			temp.set_custom_minimum_size(Vector2(Tile_X_Size, Tile_Y_Size))
 			temp.connect("pressed", func():
 				emit_signal("send_location", temp.name))
 			temp.set_name(str(Number_X) + "-" + str(Number_Y))
-			#if( Number_Y > 1 && Number_Y < 8 && rng.randi_range(0, 4) == 0 ):
-			if( Number_Y == 2 || Number_Y == 7):
+
+			if Number_Y >= center_start and Number_Y <= center_end:
+				# Assign random colors to the central rows
 				var style = StyleBoxFlat.new()
-				if(rng.randi_range(0, 1) == 0):
-					style.bg_color = Color(1, 0, 0)
-				else:
-					style.bg_color = Color(0, 1, 0)  # Red color
-				
-				temp.add_theme_stylebox_override("normal", style)  # Correct function for adding StyleBox
+				style.bg_color = colors.pop_back()
+				temp.add_theme_stylebox_override("normal", style)
 
 			add_child(temp)
 			Number_X += 1
 		Number_Y += 1
 		Number_X = 0
+
 	Regular_Game()
 
 func Regular_Game():
