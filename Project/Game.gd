@@ -49,7 +49,7 @@ func duplicate_square(node, pos, Piece):
 	piece_position = piece_position[0] + '-' + piece_position[1]
 	var style = StyleBoxFlat.new()
 	
-	style.bg_color = Color(0.1, 0.1, 0.1)  # Red color
+	style.bg_color = Color(0.1, 0.1, 0.1, 0.6)  # Red color
 	print("Node: ", node)
 	node.add_theme_stylebox_override("normal", style)
 	var node2 = get_node("Flow/" + piece_position)
@@ -145,7 +145,7 @@ func _on_flow_send_location(location: String):
 			if i == node.name:
 				var Piece = get_node("Flow/" + Selected_Node).get_child(0)
 				var style = get_node("Flow/" + str(Location_X) + "-" + str(Location_Y) ).get_theme_stylebox("normal")
-#				
+				print(style.bg_color)
 				# Check if it's a StyleB
 				if(is_red_square(Location_X, Location_Y)):
 					duoble_jump_square(node, pos, Piece, 1 if Piece.Item_Color else -1)
