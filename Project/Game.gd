@@ -11,6 +11,52 @@ var Areas: PackedStringArray
 # this is seperate the Areas for special circumstances, like castling.
 var Special_Area: PackedStringArray
 
+func is_red_square(x, y):
+	var style = get_node("Flow/" + str(x) + "-" + str(y) ).get_theme_stylebox("normal")
+	if style is StyleBoxFlat:
+		var color = style.bg_color
+		if(color[0] == 1):
+			return true
+	return false
+	
+func is_green_square(x, y):
+	var style = get_node("Flow/" + str(x) + "-" + str(y) ).get_theme_stylebox("normal")
+	if style is StyleBoxFlat:
+		var color = style.bg_color
+		if(color[1] == 1):
+			return true
+	return false
+	
+func duoble_jump_square(node, pos, Piece, diraction):
+	var piece_position = node.get_name().split('-')
+	piece_position[1] = str(int(piece_position[1]) + diraction)
+	piece_position = piece_position[0] + '-' + piece_position[1]
+	var node2 = get_node("Flow/" + piece_position)
+	if (node2.get_child_count() != 0):
+		Piece.reparent(node)
+		Piece.position = pos
+		Update_Game(node)
+	else:
+		Piece.reparent(node2)
+		Piece.position = pos
+		Update_Game(node2)
+		
+
+func duplicate_square(node, pos, Piece, diraction):
+	print("Duplicate")
+	var piece_position = node.get_name().split('-')
+	piece_position[1] = str(int(piece_position[1]) + diraction)
+	piece_position = piece_position[0] + '-' + piece_position[1]
+	var node2 = get_node("Flow/" + piece_position)
+	if (node2.get_child_count() != 0):
+		Piece.reparent(node)
+		Piece.position = pos
+		Update_Game(node)
+	else:
+		Piece.reparent(node2)
+		Piece.position = pos
+		Update_Game(node2)
+
 func _on_flow_send_location(location: String):
 	# variables for later
 	var number = 0
@@ -63,6 +109,7 @@ func _on_flow_send_location(location: String):
 					print("Damn, you win!")
 				
 				node.get_child(0).free()
+				
 				Piece.reparent(node)
 				Piece.position = pos
 				Update_Game(node)
@@ -73,43 +120,17 @@ func _on_flow_send_location(location: String):
 				var Piece = get_node("Flow/" + Selected_Node).get_child(0)
 				var style = get_node("Flow/" + str(Location_X) + "-" + str(Location_Y) ).get_theme_stylebox("normal")
 #				
-				# Check if it's a StyleBoxFlat and get the color
-				if style is StyleBoxFlat:
-					var color = style.bg_color
-					#print("Square color: ", color)
-					if(color[0] == 1):
-						if(Piece.Item_Color):
-							print("This is red i should move")
-							var name2 = node.get_name().split('-')
-							name2[1] = str(int(name2[1]) + 1)
-							name2 = name2[0] + '-' + name2[1]
-							var node2 = get_node("Flow/" + name2)
-							if (node2.get_child_count() != 0):
-								Piece.reparent(node)
-								Piece.position = pos
-								Update_Game(node)
-							else:
-								Piece.reparent(node2)
-								Piece.position = pos
-								Update_Game(node2)
-						else:
-							print("This is red i should move")
-							var name2 = node.get_name().split('-')
-							name2[1] = str(int(name2[1]) - 1)
-							name2 = name2[0] + '-' + name2[1]
-							var node2 = get_node("Flow/" + name2)
-							if (node2.get_child_count() != 0):
-								Piece.reparent(node)
-								Piece.position = pos
-								Update_Game(node)
-							else:
-								Piece.reparent(node2)
-								Piece.position = pos
-								Update_Game(node2)
-					else:
-						Piece.reparent(node)
-						Piece.position = pos
-						Update_Game(node)
+				# Check if it's a StyleB
+				if(is_red_square(Location_X, Location_Y)):
+					duoble_jump_square(node, pos, Piece, 1 if Piece.Item_Color else -1)
+					
+				elif (is_green_square(Location_X, Location_Y)):
+					duplicate_square(node, pos, Piece, 1 if Piece.Item_Color else -1)
+					
+				else:
+					Piece.reparent(node)
+					Piece.position = pos
+					Update_Game(node)
 
 func Update_Game(node):
 	Selected_Node = ""
