@@ -277,6 +277,7 @@ func _on_flow_send_location(location: String):
 				
 				if node.get_child(0).name == "King":
 					print("Damn, you win!")
+					get_tree().change_scene_to_file("res://Scenes/Restart.tscn")
 				
 				node.get_child(0).free()
 				if(is_double_jump_square(Location_X, Location_Y)):
