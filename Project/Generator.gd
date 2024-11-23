@@ -11,6 +11,11 @@ var center_end = Board_Y_Size - 3
 
 signal send_location
 # Function to spawn random colors in the central rows
+		
+		
+				
+
+			
 func spawnRandomColors(color_1, color_2, color_3, color_4, color_1_quantity, color_2_quantity, color_3_quantity, color_4_quantity):
 
 	
@@ -42,10 +47,8 @@ func _ready():
 	# Call the function to spawn the random colors
 
 	var colors = spawnRandomColors(Globals.bomb, Globals.teleport, Globals.dup, Globals.jump, 4, 2, 4, 2)
-
 	var Number_X = 0
 	var Number_Y = 0
-
 	while Number_Y != Board_Y_Size:
 		self.size.y += Tile_Y_Size + 5
 		self.size.x += Tile_X_Size + 5

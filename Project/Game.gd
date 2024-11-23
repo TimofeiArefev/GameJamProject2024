@@ -10,9 +10,8 @@ var pos = Vector2(25, 25)
 var Areas: PackedStringArray
 # this is seperate the Areas for special circumstances, like castling.
 var Special_Area: PackedStringArray
-
 func is_double_jump_square(x, y):
-	var style = get_node("Flow/" + str(x) + "-" + str(y) ).get_theme_stylebox("normal")
+	var style = get_node("Flow/" + str(x) + "-" + str(y)).get_theme_stylebox("normal")
 	if style is StyleBoxFlat:
 		var color = style.bg_color
 		if(color == Globals.jump):
@@ -20,7 +19,7 @@ func is_double_jump_square(x, y):
 	return false
 	
 func is_duplicate_square(x, y):
-	var style = get_node("Flow/" + str(x) + "-" + str(y) ).get_theme_stylebox("normal")
+	var style = get_node("Flow/" + str(x) + "-" + str(y)).get_theme_stylebox("normal")
 	if style is StyleBoxFlat:
 		var color = style.bg_color
 		if(color[1] == 1):
@@ -41,6 +40,35 @@ func duoble_jump_square(node, pos, Piece, diraction):
 		Piece.position = pos
 		Update_Game(node2)
 		
+func is_teleport_square(x, y):
+	var style = get_node("Flow/" + str(x) + "-" + str(y)).get_theme_stylebox("normal")
+	if style is StyleBoxFlat:
+		var color = style.bg_color
+		if(color == Globals.teleport):
+			return true
+	return false
+	
+func find_teleport_square(node, xb, yb, Piece):
+	var piece_position = node.get_name().split('-')
+	for x in range(10):
+		for y in range(10):
+			var style = get_node("Flow/" + str(x) + "-" + str(y)).get_theme_stylebox("normal")
+			if style is StyleBoxFlat:
+				var color = style.bg_color
+				if(color == Globals.teleport):
+					if x != int(xb) && y != int(yb):
+						piece_position = str(x) + '-' + str(y)
+						var node2 = get_node('Flow/' + piece_position)
+						if node2.get_child_count() == 0:
+							Piece.reparent(node2)
+							Piece.position = pos
+							Update_Game(node2)
+						else:
+							Piece.reparent(node)
+							Piece.position = pos
+							Update_Game(node)
+							
+
 
 func duplicate_square(node, pos, Piece):
 	print("Duplicate")
@@ -171,7 +199,8 @@ func _on_flow_send_location(location: String):
 					
 				elif (is_duplicate_square(Location_X, Location_Y)):
 					duplicate_square(node, pos, Piece )
-					
+				elif (is_teleport_square(Location_X, Location_Y)):
+					find_teleport_square(node, Location_X, Location_Y, Piece)
 				else:
 					Piece.reparent(node)
 					Piece.position = pos
