@@ -97,6 +97,23 @@ func find_teleport_square(node, xb, yb, Piece):
 							Piece.position = pos
 							Update_Game(node)
 							
+func rand_teleport_square(node, xb, yb, Piece):
+	var piece_position = node.get_name().split('-')
+	var rng = RandomNumberGenerator.new()
+	var x = rng.randi_range(0,9)
+	var y = rng.randi_range(0,9)
+	piece_position = str(x) + '-' + str(y)
+	var node2 = get_node('Flow/' + piece_position)
+	
+	if node2.get_child_count() == 0:
+		Piece.reparent(node2)
+		Piece.position = pos
+		Update_Game(node2)
+	else:
+		node2.remove_child(node2.get_child(0))
+		Piece.reparent(node)
+		Piece.position = pos
+		Update_Game(node)
 
 
 		
@@ -225,6 +242,8 @@ func _on_flow_send_location(location: String):
 				pawn.reparent(get_node("Flow/" + Special_Area[1]))
 				pawn.position = pos
 				Update_Game(pawn.get_parent())
+				var capture = $Capture
+				capture.play()
 	elif Selected_Node != "" && node.get_child_count() != 0 && node.get_child(0).Item_Color == Turn:
 		# Re-select
 		Selected_Node = location
@@ -234,6 +253,8 @@ func _on_flow_send_location(location: String):
 		for i in Areas:
 			if i == node.name:
 				var Piece = get_node("Flow/" + Selected_Node).get_child(0)
+				var capture = $Capture
+				capture.play()
 				# Win conditions
 				
 				if node.get_child(0).name == "King":
@@ -257,11 +278,12 @@ func _on_flow_send_location(location: String):
 				var Piece = get_node("Flow/" + Selected_Node).get_child(0)
 				var style = get_node("Flow/" + str(Location_X) + "-" + str(Location_Y) ).get_theme_stylebox("normal")
 				print(style.bg_color)
+				var move = $"Move-self"
+				move.play()
 				# Check if it's a StyleB
 
 				if(is_double_jump_square(Location_X, Location_Y)):
 					duoble_jump_square(node, pos, Piece, 1 if Piece.Item_Color else -1)
-					
 				elif (is_duplicate_square(Location_X, Location_Y)):
 					duplicate_square(node, pos, Piece )
 				elif(is_boomb_square(Location_X, Location_Y)):

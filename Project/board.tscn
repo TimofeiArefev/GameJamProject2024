@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://d0qyk6v20uief"]
+[gd_scene load_steps=7 format=3 uid="uid://d0qyk6v20uief"]
 
 [ext_resource type="Script" path="res://Generator.gd" id="1_ckrtr"]
 [ext_resource type="Script" path="res://Game.gd" id="1_f1l42"]
 [ext_resource type="Texture2D" uid="uid://drof16ylbodvw" path="res://phpVmOHiw.png" id="3_vrhxj"]
 [ext_resource type="Texture2D" uid="uid://bddyvmrwpbd53" path="res://A_black_image.jpg" id="4_4iv55"]
+[ext_resource type="AudioStream" uid="uid://ddwdyms872avt" path="res://audio/audio/move-self.mp3" id="5_qo7yh"]
+[ext_resource type="AudioStream" uid="uid://s602xd8ylkxu" path="res://audio/audio/capture.mp3" id="6_j84kb"]
 
 [node name="Board" type="Control"]
 layout_mode = 3
@@ -28,5 +30,11 @@ scale = Vector2(0.671875, 1)
 texture = ExtResource("4_4iv55")
 
 [node name="TextContainer" type="Node" parent="."]
+
+[node name="Move-self" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_qo7yh")
+
+[node name="Capture" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_j84kb")
 
 [connection signal="send_location" from="Flow" to="." method="_on_flow_send_location"]
